@@ -22,6 +22,11 @@
             </div>
         </div>
         <div class="input">
+            <!-- <div> -->
+                <!-- <input type="text" placeholder="Note Name" v-model="selectedNote.title"> -->
+            <!-- </div> -->
+
+            <!-- <button @click="removeNote" title="Remove note">delete</button> -->
             <textarea class="inputText" v-model="selectedNote.content" v-if="selectedNote">
             </textarea>
         </div>
@@ -34,16 +39,16 @@
 
         var vm = new Vue({
 
-            created() {
-                this.content = localStorage.getItem('content') || 'You can write in **markdown**'
-            },
+            // created() {
+            //     this.content = localStorage.getItem('content') || 'You can write in **markdown**'
+            // },
 
             el: "#notebook",
 
             data: {
                 content: "",
-                notes: [],
-                selectedId:null,
+                notes:JSON.parse(localStorage.getItem('notes')) || [],
+                selectedId:localStorage.getItem('selected-id') ||  null,
             },
 
             computed: {
@@ -63,6 +68,14 @@
             watch: {
                 content: {
                     handler: 'saveNote',
+                },
+                notes:{
+                    handler:"saveNotes",
+                    deep:true,
+                },
+
+                selectedId(val){
+                    localStorage.setItem('selected-id',val)
                 }
             },
 
@@ -80,18 +93,24 @@
                 },
 
                 saveNote() {
-                    console.log('saving note:', this.content)
-                    localStorage.setItem('content', this.content)
+                    console.log('saving notes:', this.notes)
+                    localStorage.setItem('notes',JSON.stringify(this.notes))
+                    // localStorage.setItem('content', this.content)
                 },
 
                 selectNote(note){
                     this.selectedId=note.id,
                     console.log(this.selectedId)
+                },
+
+                saveNotes(){
+                    localStorage.setItem('notes',JSON.stringify(this.notes))
+                    console.log('Notes saved: ',new Date())
                 }
             }
         })
 
-        console.log('restored noted:', localStorage.getItem('content'))
+        // console.log('restored noted:', localStorage.getItem('content'))
 
     </script>
 
